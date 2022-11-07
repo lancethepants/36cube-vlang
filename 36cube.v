@@ -24,7 +24,7 @@ fn initialize_freetowers() []Tower {
 
 	for i in 1 .. 7 {
 		for j in 0 .. 6 {
-			towers << Tower{i, Color(j), false}
+			towers << Tower{i, unsafe { Color(j) }, false}
 		}
 	}
 	return towers
@@ -55,7 +55,7 @@ fn main() {
 
 fn print_board(board [6][6]Tower) {
 	// add if statement to check our two special pieces are in their places
-	if board[3][1].color == Color(2) && board[3][3].color == Color(1) {
+	if board[3][1].color == unsafe { Color(2) } && board[3][3].color == unsafe { Color(1) } {
 		for i := 0; i < 6; i++ {
 			for j := 0; j < 6; j++ {
 				if board[i][j].inuse {
@@ -74,7 +74,7 @@ fn print_board(board [6][6]Tower) {
 
 fn evaluate_cube(mut board [6][6]Tower, mut freetowers []Tower, board_height [][]int, p Position) Position {
 	// is already purple
-	if board[p.row][p.column].inuse && board[p.row][p.column].color == Color(5) {
+	if board[p.row][p.column].inuse && board[p.row][p.column].color == unsafe { Color(5) } {
 		board[p.row][p.column].inuse = false
 		freetowers << board[p.row][p.column]
 		return back_position(p)
@@ -87,12 +87,12 @@ fn evaluate_cube(mut board [6][6]Tower, mut freetowers []Tower, board_height [][
 	// search for available tower
 	for i < 6 {
 		// if found available tower
-		mut index := find_available_tower(freetowers, Tower{6 - board_height[p.row][p.column], Color(i), false})
-		if index > -1 && color_is_free(board, p, Color(i)) {
+		mut index := find_available_tower(freetowers, Tower{6 - board_height[p.row][p.column], unsafe { Color(i) }, false})
+		if index > -1 && color_is_free(board, p, unsafe { Color(i) }) {
 			if board[p.row][p.column].inuse {
 				freetowers << board[p.row][p.column]
 			}
-			board[p.row][p.column] = Tower{6 - board_height[p.row][p.column], Color(i), true}
+			board[p.row][p.column] = Tower{6 - board_height[p.row][p.column], unsafe { Color(i) }, true}
 			freetowers[index] = freetowers[freetowers.len - 1]
 			freetowers.delete_last()
 			return advance_position(p)
